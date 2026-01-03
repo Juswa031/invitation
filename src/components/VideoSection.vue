@@ -12,7 +12,7 @@
         loop
         preload="auto"
       >
-        <source src="/videos/debut_intros.MOV" type="video/mp4" />
+        <source src="/videos/debut.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
