@@ -64,7 +64,7 @@ export default {
           title: "Blue Bills",
           description: "A fun and meaningful tradition wishing prosperity and success.",
           givers: [
-            { name: "Jhenifer Abata", role: null },
+            { name: "Jhenifer Abalos", role: null },
             { name: "Jean Rose Viesca", role: null },
             { name: "Kristine Mae Maranan", role: null },
             { name: "Melvie Joyce Tumambing", role: null },
@@ -85,6 +85,7 @@ export default {
             { name: "Desiree Soriano", role: null },
             { name: "Joshua Sandoval", role: null },
             { name: "Mary Grace Pereda", role: null },
+            { name: "Kenneth Pastrana", role: null }
           ]
         },
         {

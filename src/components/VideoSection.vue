@@ -16,7 +16,7 @@
         Your browser does not support the video tag.
       </video>
 
-      <!-- Overlay Video for texture / romantic ambiance -->
+      <!-- Overlay Video -->
       <video
         ref="overlayVideo"
         class="hero-video overlay-video"
@@ -25,23 +25,37 @@
         playsinline
         loop
         preload="auto"
-      >
-      </video>
+      ></video>
 
-      <!-- Cinematic Gradient Overlay -->
+      <!-- Gradient Overlay -->
       <div class="video-gradient-overlay"></div>
 
-      <!-- Elegant Invitation Text -->
-      <div class="scroll-text" :style="{ opacity: scrollOpacity, transform: scrollTransform }">
+      <!-- Invitation Text -->
+      <div
+        class="scroll-text"
+        :style="{ opacity: scrollOpacity, transform: scrollTransform }"
+      >
         <h2 class="invite-label">You Are Cordially Invited</h2>
         <h1 class="invite-name">{{ name }}</h1>
         <p class="invite-date">{{ subtitle }}</p>
       </div>
+
+      <!-- Scroll Down Indicator -->
+      <div class="scroll-indicator" :style="{ opacity: scrollOpacity }">
+        <span class="scroll-label">Scroll Down</span>
+        <div class="mouse">
+          <span class="wheel"></span>
+        </div>
+      </div>
     </section>
 
-    <!-- Invitation Content Below Video -->
+    <!-- Invitation Content -->
     <section class="hero-new-container animate" v-observe>
-      <HeroSection :countdown="countdown" :name="name" :subtitle="subtitle" />
+      <HeroSection
+        :countdown="countdown"
+        :name="name"
+        :subtitle="subtitle"
+      />
     </section>
   </div>
 </template>
@@ -56,8 +70,8 @@ export default {
       countdown: { days: "00", hours: "00", minutes: "00", seconds: "00" },
       debutDate: new Date("2026-01-11T18:00:00"),
       timer: null,
-      name: 'Jessica Aisha Denielle Adeva',
-      subtitle: 'A Debut Celebration',
+      name: "Jessica Aisha Denielle Adeva",
+      subtitle: "A Debut Celebration",
       scrollY: 0,
     };
   },
@@ -73,14 +87,14 @@ export default {
     },
     overlayOpacity() {
       return 0.3 - this.scrollY / 1000;
-    }
+    },
   },
   directives: {
     observe: {
       mounted(el) {
         const observer = new IntersectionObserver(
           ([entry]) => {
-            if (entry.isIntersecting) el.classList.add('in-view');
+            if (entry.isIntersecting) el.classList.add("in-view");
           },
           { threshold: 0.2 }
         );
@@ -91,38 +105,40 @@ export default {
   mounted() {
     this.updateCountdown();
     this.timer = setInterval(this.updateCountdown, 1000);
-    window.addEventListener('scroll', this.handleScroll, { passive: true });
+    window.addEventListener("scroll", this.handleScroll, { passive: true });
   },
   beforeUnmount() {
     clearInterval(this.timer);
-    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
     updateCountdown() {
       const distance = this.debutDate - new Date();
       if (distance <= 0) {
         clearInterval(this.timer);
-        this.countdown = { days: "00", hours: "00", minutes: "00", seconds: "00" };
         return;
       }
-      this.countdown.days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, "0");
-      this.countdown.hours = String(Math.floor((distance / (1000 * 60 * 60)) % 24)).padStart(2, "0");
-      this.countdown.minutes = String(Math.floor((distance / 1000 / 60) % 60)).padStart(2, "0");
+      this.countdown.days = String(Math.floor(distance / 86400000)).padStart(2, "0");
+      this.countdown.hours = String(Math.floor((distance / 3600000) % 24)).padStart(2, "0");
+      this.countdown.minutes = String(Math.floor((distance / 60000) % 60)).padStart(2, "0");
       this.countdown.seconds = String(Math.floor((distance / 1000) % 60)).padStart(2, "0");
     },
     handleScroll() {
-      const sectionTop = this.$refs.videoSection.offsetTop;
-      this.scrollY = Math.min(window.scrollY - sectionTop, 300);
-      
-      if (this.$refs.mainVideo) this.$refs.mainVideo.style.transform = `scale(${this.videoScale})`;
-      if (this.$refs.overlayVideo) this.$refs.overlayVideo.style.opacity = this.overlayOpacity;
-    }
-  }
+      const top = this.$refs.videoSection.offsetTop;
+      this.scrollY = Math.min(window.scrollY - top, 300);
+
+      if (this.$refs.mainVideo)
+        this.$refs.mainVideo.style.transform = `scale(${this.videoScale})`;
+
+      if (this.$refs.overlayVideo)
+        this.$refs.overlayVideo.style.opacity = this.overlayOpacity;
+    },
+  },
 };
 </script>
 
 <style scoped>
-/* ================= Multi-Video Hero ================= */
+/* ================= HERO VIDEO ================= */
 .hero-video-section {
   position: relative;
   width: 100%;
@@ -130,112 +146,115 @@ export default {
   overflow: hidden;
 }
 
-/* Main Video */
-.hero-video.main-video {
+.hero-video {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.main-video {
   filter: brightness(0.8) contrast(1.2) saturate(1.1);
   z-index: 1;
-  transition: transform 0.3s ease;
 }
 
-/* Overlay Video */
-.hero-video.overlay-video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.overlay-video {
   opacity: 0.3;
-  filter: blur(1px) brightness(1.1);
+  filter: blur(1px);
   z-index: 2;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
 }
 
-/* Gradient Overlay */
 .video-gradient-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(255,230,240,0.2), rgba(166,81,140,0.2));
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,230,240,0.25),
+    rgba(166,81,140,0.25)
+  );
   z-index: 3;
-  pointer-events: none;
 }
 
-/* ================= Elegant Invitation Text ================= */
+/* ================= TEXT ================= */
 .scroll-text {
   position: absolute;
-  bottom: 25%;
+  bottom: 28%;
   left: 50%;
   transform: translate(-50%, 0);
   text-align: center;
   color: #fff;
   z-index: 4;
-  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Label */
 .invite-label {
   font-family: 'Playfair Display', serif;
   font-size: 1.8rem;
-  color: #ffe4f1;
-  text-shadow: 2px 2px 12px rgba(0,0,0,0.5);
-  margin-bottom: 10px;
   letter-spacing: 2px;
-  animation: fadeUp 1.5s ease;
 }
 
-/* Name */
 .invite-name {
   font-family: 'Great Vibes', cursive;
   font-size: 3.5rem;
-  color: #ffcee8;
-  text-shadow: 2px 2px 20px rgba(0,0,0,0.6);
-  margin-bottom: 8px;
-  animation: fadeUp 2s ease;
+  color: #ffd4e8;
 }
 
-/* Subtitle / Date */
 .invite-date {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
-  color: #ffd4e3;
-  text-shadow: 1px 1px 15px rgba(0,0,0,0.5);
-  animation: fadeUp 2.5s ease;
+  font-size: 1.4rem;
 }
 
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ================= SCROLL INDICATOR ================= */
+.scroll-indicator {
+  position: absolute;
+  bottom: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 5;
+  color: #ffe4f1;
 }
 
-/* ================= Invitation Content ================= */
-.hero-new-container {
+.scroll-label {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.mouse {
+  width: 26px;
+  height: 42px;
+  border: 2px solid rgba(255, 228, 241, 0.8);
+  border-radius: 20px;
+  margin: auto;
   position: relative;
-  width: 100%;
-  min-height: 100vh;
+}
+
+.wheel {
+  width: 4px;
+  height: 8px;
+  background: #ffe4f1;
+  border-radius: 2px;
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: wheelMove 2s infinite;
+}
+
+@keyframes wheelMove {
+  0% { opacity: 0; top: 6px; }
+  40% { opacity: 1; }
+  80% { opacity: 0; top: 18px; }
+}
+
+/* ================= CONTENT ================= */
+.hero-new-container {
   background: linear-gradient(to bottom, #fff0f5, #ffeef7);
-  display: flex;
-  justify-content: center;
   padding: 80px 20px;
   opacity: 0;
   transform: translateY(40px);
-  transition: all 1s ease;
-  z-index: 5;
+  transition: 1s;
 }
 
 .hero-new-container.in-view {
@@ -243,18 +262,9 @@ export default {
   transform: translateY(0);
 }
 
-/* ================= Responsive ================= */
-@media (max-width: 768px) {
-  .invite-label { font-size: 1.4rem; }
-  .invite-name { font-size: 2.5rem; }
-  .invite-date { font-size: 1.2rem; }
-  .hero-new-container { padding: 50px 15px; }
-}
-
+/* ================= MOBILE ================= */
 @media (max-width: 480px) {
+  .invite-name { font-size: 2.2rem; }
   .invite-label { font-size: 1.2rem; }
-  .invite-name { font-size: 2rem; }
-  .invite-date { font-size: 1rem; }
-  .hero-new-container { padding: 40px 10px; }
 }
 </style>
